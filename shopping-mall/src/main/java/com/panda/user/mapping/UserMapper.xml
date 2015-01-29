@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.panda.dao.UserMapper">
+	<resultMap id="result" type="com.panda.user.po.UserPo">
+		<result property="id" column="id" />
+		<result property="loginName" column="loginName" />
+		<result property="age" column="age" />
+		<result property="address" column="address" />
+		<result property="nickName" column="nickName" />
+		<result property="loginPassWord" column="loginPassWord" />
+		<result property="payPassWord" column="payPassWord" />
+		<result property="phone" column="phone" />
+		<result property="email" column="email" />
+	</resultMap>
+	<insert id="saveUser" parameterType="com.panda.user.po.UserPo">
+		INSERT INTO user
+		(loginName,loginPassWord,phone,email)
+		VALUE
+		(#{loginName},#{loginPassWord},#{phone},#{email})
+	</insert>
+	<select id="getUserById" parameterType="int" resultMap="result">
+		SELECT * FROM user where id =#{id};
+	</select>
+	<select id="getUserByLoginName" parameterType="java.lang.String" resultMap="result">
+		SELECT * FROM user where  loginName=#{loginName};
+	</select>
+	<select id="getUserAll" resultType="java.lang.Integer" parameterType="java.util.Map">
+		SELECT count(*) FROM user where 1=1 
+		<if test="loginName != null and loginName !=''" >
+        AND loginName=#{loginName} 
+        </if>
+        <if test="nickName != null and nickName !=''" >
+        and nickName=#{nickName}
+        </if>
+	</select>
+	<select id="getUserPage" parameterType="java.util.Map" resultMap="result">
+		SELECT * FROM user where 1=1 
+		<if test="loginName != null and loginName !=''" >
+        AND loginName=#{loginName} 
+        </if>
+        <if test="nickName != null and nickName !=''" >
+        and nickName=#{nickName}
+        </if> 
+        limit ${startPos},${pageSize};
+	</select>
+</mapper>

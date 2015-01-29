@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+				http://www.springframework.org/schema/beans 
+				http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+				http://www.springframework.org/schema/tx 
+				http://www.springframework.org/schema/tx/spring-tx.xsd
+			    http://www.springframework.org/schema/context 
+                http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+			    http://www.springframework.org/schema/aop 
+			    http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+			<!-- 定义使用C3P0连接池的数据源 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<!-- 指定连接数据库的JDBC驱动 -->
+		<property name="driverClass" value="${pandas.db.driver}"></property>
+		<property name="jdbcUrl"     value="${pandas.db.url}"></property>
+		<property name="user"        value="${pandas.db.username}"></property>
+		<property name="password"    value="${pandas.db.passwd}"></property>
+		<property name="minPoolSize" value="5"></property>
+		<property name="maxPoolSize" value="100"></property>
+		<property name="initialPoolSize" value="50"></property> 
+		<property name="maxIdleTime" value="120"></property>
+		<property name="acquireIncrement" value="5"></property>
+		<property name="maxStatements" value="0"></property>
+		<property name="idleConnectionTestPeriod" value="60"></property>
+	
+	</bean>
+    <!-- 配置sqlSessionFactory 所有的数据库实体映射文件都应该被加载到-->
+	<bean id="sqlSessionFactory"  class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="mapperLocations">
+			<value>classpath:com/panda/*/mapping/*.xml</value>
+		</property>
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<!-- 事务相关控制 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      	<property name="dataSource" ref="dataSource" /> 
+    </bean>
+    
+    <!-- 置事务采用的声明方式,此处使用注解的方式来进行声明：@Transactional -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- 配置aop 事务管理-->
+	<aop:config>
+		<aop:pointcut expression="execution(* com.panda.*.service.*.*(..))" id="servicePointcut" />
+		<!-- 对在aop切面内的方法添加事物 -->
+	    <aop:advisor advice-ref="txAdvice" pointcut-ref="servicePointcut" />
+	</aop:config>
+	<!-- 具体的事物配置 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+	  		<tx:method name="select*" read-only="true" propagation="REQUIRED" />
+            <tx:method name="find*"   read-only="true" propagation="REQUIRED" />
+            <tx:method name="get*"   read-only="true" propagation="REQUIRED" />
+            <tx:method name="save*" propagation="REQUIRED" isolation="SERIALIZABLE" />
+            <tx:method name="update*" propagation="REQUIRED" isolation="SERIALIZABLE" />
+            <tx:method name="add*" propagation="REQUIRED" isolation="SERIALIZABLE" />
+            <tx:method name="delete*" propagation="REQUIRED" isolation="SERIALIZABLE" />
+            <tx:method name="*" rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+	<!-- 扫描包，生成Dao实现并自动注入Service层中 (所有有注解类所在的包都得在这声明，重点)-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.panda.*.dao"/>
+    </bean>
+</beans>

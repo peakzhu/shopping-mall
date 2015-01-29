@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- For assistance related to logback-translator or configuration -->
+<!-- files in general, please contact the logback user mailing list -->
+<!-- at http://www.qos.ch/mailman/listinfo/logback-user -->
+<!-- -->
+<!-- For professional support please see -->
+<!-- http://www.qos.ch/shop/products/professionalSupport -->
+<!-- -->
+<configuration scan="true" scanPeriod="60 seconds">
+	<!-- log base path -->
+	<property resource="pandas_variable.properties" />
+	<property name="LOG_HOME" value="${log.home}" />
+	<property name="LOG_NAME" value="pandas-log" />
+	<!-- back log base path -->
+	<property name="LOG_HOME_BACK" value="${LOG_HOME}/backup" />
+	<!-- 系统日志  配置-->
+	<appender name="pandas-system" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME}/${LOG_NAME}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>${LOG_HOME_BACK}/${LOG_NAME}.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<!-- keep 30 days' worth of history -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<!-- 日志追加到文件结尾 -->
+		<append>true</append>
+		<encoder>
+			<pattern>%d{yyyyMMddHHmmss} [%c %2M %2L] %-3p - %m%n</pattern>
+		</encoder>
+	</appender>
+	<!-- 业务日志  配置-->
+	<appender name="pandas-business" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME}/${LOG_NAME}_business.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>${LOG_HOME_BACK}/${LOG_NAME}_business.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<!-- keep 30 days' worth of history -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<!-- 日志追加到文件结尾 -->
+		<append>true</append>
+		<encoder>
+			<pattern>%d{yyyyMMddHHmmss} [%c %2M %2L] %-3p - %m%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyyMMddHHmmss} [%c %2M %2L] %-3p - %m%n</pattern>
+		</encoder>
+	</appender>
+	<!-- root 执行  系统日志配置  -->
+	<root level="info">
+		<appender-ref ref="console" />
+		<appender-ref ref="pandas-system" />
+	</root>
+	<!--business-log  执行  业务日志配置  -->
+	<logger name="business-log" level="info">
+		<appender-ref ref="pandas-business"/>
+	</logger>
+</configuration>
