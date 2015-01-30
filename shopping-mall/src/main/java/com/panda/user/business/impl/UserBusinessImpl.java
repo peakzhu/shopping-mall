@@ -66,4 +66,26 @@ public class UserBusinessImpl implements UserBusiness{
 			}
 		return res;
 	}
+	@Override
+	public ReturnData<Boolean> checkLoginName(String loginName) {
+		ReturnData<Boolean> res=new ReturnData<Boolean>(OperationType.CHECK_LOGIN_NAME);
+		try {
+			boolean  code=userServiceImpl.checkLoginName(loginName);
+			res.getSuccessResponse("校验用户名是否重复成功!", code);
+		} catch (PDServiceException e) {
+			res.getFailResponse(e.getErrorKey(), e.getMessage());
+		}
+		return res;
+	}
+	@Override
+	public ReturnData<Integer> updateUser(UserPo userPo) {
+		ReturnData<Integer> res=new ReturnData<Integer>(OperationType.UPDATE_USER);
+		try {
+			int  code=userServiceImpl.updateUser(userPo);
+			res.getSuccessResponse("更新用户操作成功!", code);
+		} catch (PDServiceException e) {
+			res.getFailResponse(e.getErrorKey(), e.getMessage());
+		}
+	return res;
+	}
 }

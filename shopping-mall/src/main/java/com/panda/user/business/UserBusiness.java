@@ -11,4 +11,6 @@ public interface UserBusiness {
 	public ReturnData<Integer> saveUser(UserPo userPo);
 	public ReturnData<Page<List<UserPo>>> getUserPage(String loginName, String nickName,int curPage, int pageSize);
 	public ReturnData<String> login(String loginName, String password, int type);
+	public ReturnData<Boolean> checkLoginName(String loginName);
+	public ReturnData<Integer> updateUser(UserPo userPo);
 }

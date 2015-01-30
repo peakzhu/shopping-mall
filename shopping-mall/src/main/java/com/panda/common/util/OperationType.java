@@ -14,7 +14,10 @@ public class OperationType {
 	public static final int SAVE_USER = 102;// 新增用户
 	public static final int GET_USER_BY_ID = 103;// 根据ID查询用户
 	public static final int GET_USER_PAGE=104;//分页查询用户
+	public static final int CHECK_LOGIN_NAME=105;//校验个人用户名是否重复
+	public static final int UPDATE_USER = 106;// 用户更新
 	// 企业用户模块 150-199
 	public static final int GET_COMPANY_USER_BY_ID = 150;//根据ID查询单个企业用户
 	public static final int SAVE_COMPANY_USER = 151;// 新增企业用户
+	public static final int CHECK_USER_NAME=152;//校验企业用户名是否重复
 }

@@ -7,6 +7,7 @@ import net.sf.ehcache.Element;
 
 import org.springframework.stereotype.Component;
 
+import com.panda.user.po.CompanyUserPo;
 import com.panda.user.po.UserPo;
 
 @Component
@@ -17,6 +18,12 @@ public class CacheCenter {
 	 */
 	@Resource(name="userLoginCache")
 	private Cache userLoginCache;
+	
+	/**
+	 * 个人用户信息缓存。
+	 */
+	@Resource(name="companyUserLoginCache")
+	private Cache companyUserLoginCache;
 	/**
 	 * 添加用户登陆信息缓存。
 	 * @param key sid
@@ -87,6 +94,75 @@ public class CacheCenter {
 	}
 	
 	
+	
+	/**
+	 * 添加企业用户登陆信息缓存。
+	 * @param key sid
+	 * @param value 
+	 * @return
+	 */
+	public boolean addCompanyUserPoInfo(String key, CompanyUserPo value)
+	{
+		if (this.isNotEmpty(companyUserLoginCache))
+		{
+			Element element = new Element(key, value);
+			companyUserLoginCache.put(element);
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 移除缓存 包括用户登陆信息，用户信息
+	 * @param key
+	 * @return
+	 */
+	public synchronized boolean removeCompanyUserPoInfo(String key)
+	{
+		if (this.isNotEmpty(companyUserLoginCache))
+		{
+			companyUserLoginCache.remove(key);
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 获取用户登录信息。
+	 * @param key sid
+	 * @return 
+	 */
+	public CompanyUserPo getCompanyUserPoInfo(String key)
+	{
+		if (this.isNotEmpty(companyUserLoginCache))
+		{
+			Element element = companyUserLoginCache.get(key);
+			if (null != element)
+			{
+				return (CompanyUserPo)element.getObjectValue();
+			}
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * 更新用户登录信息缓存。
+	 * @param key sid
+	 * @param value 用户对象
+	 * @return
+	 */
+	public synchronized boolean updateCompanyUserPoInfo(String key, CompanyUserPo value)
+	{
+		if (this.isNotEmpty(companyUserLoginCache))
+		{
+			Element element = new Element(key, value);
+			companyUserLoginCache.remove(key);
+			companyUserLoginCache.put(element);
+			return true;
+		}
+		return false;
+	}
 	/**
 	 * 验证cache是否为空。
 	 * @param cache

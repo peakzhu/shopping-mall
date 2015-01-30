@@ -21,6 +21,7 @@ import com.panda.common.cache.CacheCenter;
 import com.panda.common.util.Constants;
 import com.panda.common.util.JsonInterfaceTools;
 import com.panda.common.vo.ResponseCode;
+import com.panda.user.business.UserBusiness;
 import com.panda.user.po.UserPo;
 public class IMHandler extends HandlerInterceptorAdapter{
 
@@ -28,6 +29,8 @@ public class IMHandler extends HandlerInterceptorAdapter{
 
 	@Resource
 	private CacheCenter cacheCenter;
+	@Resource
+	private UserBusiness userBusinessImpl;
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		String reqURI = request.getRequestURI();
@@ -56,10 +59,6 @@ public class IMHandler extends HandlerInterceptorAdapter{
 			}else if(Constants.COOKIE_NAME_UINFO.equals(cookie.getName())){
 				userInfo = cookie.getValue();
 			}
-		}
-
-		if (StringUtils.isEmpty(sid)) {
-			//logger.error("sid is empty");
 		}
 		request.setAttribute(Constants.SID, sid);
 		// TODO 置入终端类型 默认 www
@@ -109,14 +108,17 @@ public class IMHandler extends HandlerInterceptorAdapter{
 						String password = new String(Base64.decodeBase64(psp[1]));
 						String isAuto = new String(Base64.decodeBase64(psp[2]));
 						if(Constants.ISAUTO_LOGIN.equals(isAuto)){
-							//result = loginLogicImpl.login(PublicUtil.getClientInfo(request), loginName, password, Integer.parseInt(isAuto));
-							if(result.get("user")!=null){
-								//user = (SysUserVo)result.get("user");
-								request.setAttribute(Constants.SID, user.getIdentify());
-								request.setAttribute(Constants.UID, user.getId());
+							result = userBusinessImpl.login(loginName, password,1).toMap();
+							if(result.get("data")!=null){
+								request.setAttribute(Constants.SID,(String)result.get("data"));
 								isLogin = true;
+							}else{
+								result = userBusinessImpl.login(loginName, password,2).toMap();
+								if(result.get("data")!=null){
+									request.setAttribute(Constants.SID,(String)result.get("data"));
+									isLogin = true;
+								}
 							}
-							
 						}
 					}
 				}
@@ -132,7 +134,6 @@ public class IMHandler extends HandlerInterceptorAdapter{
 				}
 			}
 		}
-		
 		return super.preHandle(request, response, handler);
 	}
 	
@@ -167,7 +168,8 @@ public class IMHandler extends HandlerInterceptorAdapter{
 		String rexpurl;
 		for (int i = 0; i < rmClsValueString.length; i++) {
 			for (int j = 0; j < rmMtdValueString.length; j++) {
-				uurl = new StringBuilder(rmClsValueString[i]);
+				uurl=new StringBuilder("/pandas");
+				uurl.append(rmClsValueString[i]);
 				uurl.append(rmMtdValueString[i]);
 				rexpurl = uurl.toString().replaceAll("\\{.+?\\}", ".+?");
 				if (reqURI.matches(rexpurl)) {

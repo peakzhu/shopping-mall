@@ -6,4 +6,5 @@ import com.panda.user.po.CompanyUserPo;
 public interface CompanyUserService {
 	public CompanyUserPo getCompanyUserById(int id)throws PDServiceException;
 	public int saveCompanyUser(CompanyUserPo companyUserPo)throws PDServiceException;
+	public boolean checkLoginName(String userName)throws PDServiceException;
 }

@@ -21,7 +21,7 @@ public class Constants {
 	public static String COOKIE_NAME_UINFO = "GSTDUINFO";
 	public static String COOKIE_NAME_DOMAIN = "";
 	public static String UNREACHED_BUSSINESS = "获取后台数据失败，请联系系统管理员";
-	public static String LOGIN_PAGE = "/login/login.shtml";
+	public static String LOGIN_PAGE = "/pandas/login.shtml";
 	public static String ISAUTO_LOGIN = "2";
 	
 	

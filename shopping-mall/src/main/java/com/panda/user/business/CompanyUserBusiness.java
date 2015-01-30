@@ -6,4 +6,5 @@ import com.panda.user.po.CompanyUserPo;
 public interface CompanyUserBusiness {
 	public ReturnData<CompanyUserPo> getCompanyUserById(int id);
 	public ReturnData<Integer> saveCompanyUser(CompanyUserPo companyUserPo);
+	public ReturnData<Boolean> checkUserName(String userName);
 }

@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService{
 					if(check.equals(po.getPassWord())){
 						//TODO 生成sid
 						po.setIdentify(IdentifyUtils.getIdentify(po.getId(), po.getUserName(), po.getPassWord()));
-						//cacheCenter.addUserInfo(po.getIdentify(), po);
+						cacheCenter.addCompanyUserPoInfo(po.getIdentify(), po.toPo());
 						return po.getIdentify();
 					}else{
 						log.info("UserServiceImpl--login 用户登录  失败 用户名或密码错误!");
@@ -161,6 +161,39 @@ public class UserServiceImpl implements UserService{
 		}catch(Exception e){
 			log.info("UserServiceImpl--getUserPage 分页查询用户失败 errorMes:"+e.getMessage());
 			throw new PDServiceException("分页查询用户失败",4000);
+		}
+	}
+	@Override
+	public boolean checkLoginName(String loginName) throws PDServiceException {
+		if(StringUtils.isEmpty(loginName)){
+			log.info("UserServiceImpl--checkLoginName 用户名为空");
+			throw new PDServiceException("用户名为空!",2000);
+		}
+		boolean code=false;
+		try{
+			UserPo po=userMapper.getUserByLoginName(loginName);
+			if(po==null){
+				code=true;
+			}
+			return code;
+		}catch(Exception e){
+			log.info("UserServiceImpl--checkLoginName 校验用户名是否重复失败   +errorMeg="+e.getMessage());
+			throw new PDServiceException("校验用户名是否重复失败 ",4000);
+		}
+	}
+	@Override
+	public int updateUser(UserPo userPo) throws PDServiceException {
+		log.info("UserServiceImpl--saveUser 参数 userPo="+userPo.toString());
+		try{
+			int code=userMapper.updateUser(userPo);
+			if(code>0){
+				cacheCenter.updateUserInfo(userPo.getIdentify(), userPo);
+			}
+			log.info("UserServiceImpl--saveUser return code="+code);
+			return code;
+		}catch(Exception e){
+			log.info("UserServiceImpl--saveUser 保存用户失败   +errorMeg="+e.getMessage());
+			throw new PDServiceException("保存用户失败",4000);
 		}
 	}
 }

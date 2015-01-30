@@ -11,4 +11,5 @@ public interface UserMapper{
 	public int getUserAll(Map<String,String> map);
 	public List<UserPo> getUserPage(Map<String,String> map);
 	public UserPo getUserByLoginName(String loginName);
+	public int updateUser(UserPo userPo);
 }

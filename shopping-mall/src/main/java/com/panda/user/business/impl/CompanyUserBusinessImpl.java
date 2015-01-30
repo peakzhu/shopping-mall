@@ -38,4 +38,16 @@ public class CompanyUserBusinessImpl implements CompanyUserBusiness{
 		}
 	return res;
 	}
+
+	@Override
+	public ReturnData<Boolean> checkUserName(String userName) {
+		ReturnData<Boolean> res=new ReturnData<Boolean>(OperationType.CHECK_USER_NAME);
+		try {
+			boolean  code=companyUserServiceImpl.checkLoginName(userName);
+			res.getSuccessResponse("校验用户名是否重复成功!", code);
+		} catch (PDServiceException e) {
+			res.getFailResponse(e.getErrorKey(), e.getMessage());
+		}
+		return res;
+	}
 }

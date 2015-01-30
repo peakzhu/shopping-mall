@@ -127,7 +127,7 @@ public class ReturnData<E> implements Serializable {
 	public Map<String,Object> toMap(){
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("code",this.getCode());
-		map.put("meg",this.getMsg());
+		map.put("msg",this.getMsg());
 		map.put("data",this.getData());
 		return map;
 	}

@@ -3,6 +3,7 @@ package com.panda.user.service.impl;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class CompanyUserServiceImpl implements CompanyUserService{
 		if(id>0){
 			CompanyUserPo companyUser=companyUserMapper.getCompanyUserById(id);
 			log.info("CompanyUserServiceImpl--getCompanyUserById return  companyUserPo="+companyUser.toString());
-			return companyUser;
+			return companyUser.toPo();
 		}else{
 			log.info("CompanyUserServiceImpl--getCompanyUserById 查询企业用户失败 参数错误 Id="+id);
 			throw new PDServiceException("查询用户失败 参数错误 Id="+id,2000);
@@ -54,6 +55,24 @@ public class CompanyUserServiceImpl implements CompanyUserService{
 		}catch(Exception e){
 			log.info("CompanyUserServiceImpl--saveCompanyUser 保存用户失败   +errorMeg="+e.getMessage());
 			throw new PDServiceException("保存用户失败",4000);
+		}
+	}
+	@Override
+	public boolean checkLoginName(String userName) throws PDServiceException {
+		if(StringUtils.isEmpty(userName)){
+			log.info("CompanyUserServiceImpl--checkLoginName 用户名为空");
+			throw new PDServiceException("用户名为空!",2000);
+		}
+		boolean code=false;
+		try{
+			CompanyUserPo po=companyUserMapper.getUserByUserName(userName);
+			if(po==null){
+				code=true;
+			}
+			return code;
+		}catch(Exception e){
+			log.info("CompanyUserServiceImpl--checkLoginName 校验用户名是否重复失败   +errorMeg="+e.getMessage());
+			throw new PDServiceException("校验用户名是否重复失败 ",4000);
 		}
 	}
 }

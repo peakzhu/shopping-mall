@@ -11,5 +11,7 @@ public interface UserService {
 	public int saveUser(UserPo userPo)throws PDServiceException;
 	public Page<List<UserPo>> getUserPage(String loginName, String nickName,
 			int curPage, int pageSize)throws PDServiceException;
-	public String login(String loginName, String password, int type)throws PDServiceException; 
+	public String login(String loginName, String password, int type)throws PDServiceException;
+	public boolean checkLoginName(String loginName)throws PDServiceException;
+	public int updateUser(UserPo userPo)throws PDServiceException; 
 }

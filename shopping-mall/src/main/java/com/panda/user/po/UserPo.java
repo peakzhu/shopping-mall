@@ -1,6 +1,7 @@
 package com.panda.user.po;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class UserPo implements Serializable{
 	/**
@@ -9,7 +10,8 @@ public class UserPo implements Serializable{
 	private static final long serialVersionUID = 5366913504107276038L;
 	private int id;
 	private String loginName;//登录名 
-	private String age;//年龄
+	private String sex;//性别
+	private String birthday;//生日
 	private String address;//地址
 	private String nickName;//昵称
 	private String loginPassWord;//登录密码
@@ -17,6 +19,9 @@ public class UserPo implements Serializable{
 	private String phone;//手机
 	private String email;//邮箱
 	private String identify;
+	private int status;//1:生效 2：失效
+	private Date cTime;//该条记录的创建时间
+	private Date uTime;//该条记录的更新时间
 	public int getId() {
 		return id;
 	}
@@ -29,11 +34,17 @@ public class UserPo implements Serializable{
 	public void setLoginName(String loginName) {
 		this.loginName = loginName;
 	}
-	public String getAge() {
-		return age;
+	public String getSex() {
+		return sex;
 	}
-	public void setAge(String age) {
-		this.age = age;
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+	public String getBirthday() {
+		return birthday;
+	}
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
 	}
 	public String getAddress() {
 		return address;
@@ -77,13 +88,31 @@ public class UserPo implements Serializable{
 	public void setIdentify(String identify) {
 		this.identify = identify;
 	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	public Date getcTime() {
+		return cTime;
+	}
+	public void setcTime(Date cTime) {
+		this.cTime = cTime;
+	}
+	public Date getuTime() {
+		return uTime;
+	}
+	public void setuTime(Date uPdate) {
+		this.uTime = uPdate;
+	}
 	@Override
 	public String toString() {
-		return "UserPo [id=" + id + ", loginName=" + loginName + ", age=" + age
-				+ ", address=" + address + ", nickName=" + nickName
-				+ ", loginPassWord=" + loginPassWord + ", payPassWord="
-				+ payPassWord + ", phone=" + phone + ", email=" + email
-				+ ", identify=" + identify + "]";
+		return "UserPo [id=" + id + ", loginName=" + loginName + ", sex=" + sex
+				+ ", birthday=" + birthday + ", address=" + address
+				+ ", nickName=" + nickName + ", loginPassWord=" + loginPassWord
+				+ ", payPassWord=" + payPassWord + ", phone=" + phone
+				+ ", email=" + email + ", identify=" + identify + ", status="
+				+ status + "]";
 	}
-	
 }
